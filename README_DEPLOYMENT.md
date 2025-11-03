@@ -47,7 +47,7 @@ sudo docker run -it --rm -v/etc/letsencrypt:/etc/letsencrypt -v/var/www/certbot:
 The certificates needs renewing every three months, which can be done manually using the same command. To automatically renew once a week you can use cron, e.g. `sudo crontab -e`, then add the following line:
 
 ```
-0 0 * * 0 docker run -it --rm -v/etc/letsencrypt:/etc/letsencrypt -v/var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot --webroot-path /var/www/certbot/ -n -d predictcr.com
+0 0 * * 0 docker run --rm -v/etc/letsencrypt:/etc/letsencrypt -v/var/www/certbot:/var/www/certbot certbot/certbot certonly --webroot --webroot-path /var/www/certbot/ -n -d predictcr.com && cd /home/ubuntu && docker compose up frontend --force-recreate -d
 ```
 
 ### Give users admin rights
