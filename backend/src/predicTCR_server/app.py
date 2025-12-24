@@ -97,6 +97,42 @@ def create_app(data_path: str = "/predictcr_data"):
         access_token = create_access_token(identity=user)
         return jsonify(user=user.as_dict(), access_token=access_token)
 
+    @app.route("/api/dev_login", methods=["POST"])
+    def dev_login():
+        """Dev-only endpoint: auto-creates and logs in a dev user (no registration needed)"""
+        dev_email = "dev@local"
+        logger.info(f"Dev login request")
+        # Check if dev user exists
+        user = db.session.execute(
+            db.select(User).filter(User.email == dev_email)
+        ).scalar_one_or_none()
+        if user is None:
+            # Create the dev user with admin privileges
+            from predicTCR_server.model import ph
+            db.session.add(
+                User(
+                    id=None,
+                    email=dev_email,
+                    password_hash=ph.hash("devpass"),
+                    activated=True,
+                    enabled=True,
+                    quota=9999,
+                    submission_interval_minutes=0,
+                    last_submission_timestamp=0,
+                    is_admin=True,
+                    is_runner=False,
+                    full_results=True,
+                )
+            )
+            db.session.commit()
+            user = db.session.execute(
+                db.select(User).filter(User.email == dev_email)
+            ).scalar_one_or_none()
+            logger.info(f"  -> created dev user")
+        access_token = create_access_token(identity=user)
+        logger.info(f"  -> returning JWT access token for dev user")
+        return jsonify(user=user.as_dict(), access_token=access_token)
+
     @app.route("/api/signup", methods=["POST"])
     def signup():
         email = request.json.get("email", None)

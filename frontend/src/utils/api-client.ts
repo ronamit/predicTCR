@@ -89,3 +89,17 @@ export function download_string_as_file(filename: string, str: string) {
   link.click();
   URL.revokeObjectURL(link.href);
 }
+
+export async function devLogin(): Promise<boolean> {
+  try {
+    const response = await apiClient.post("dev_login", {});
+    const user = useUserStore();
+    user.user = response.data.user;
+    user.token = response.data.access_token;
+    console.log("Dev auto-login successful:", user.user?.email);
+    return true;
+  } catch (error) {
+    console.error("Dev auto-login failed:", error);
+    return false;
+  }
+}

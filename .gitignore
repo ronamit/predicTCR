@@ -180,3 +180,6 @@ dmypy.json
 cython_debug/
 
 *.pem
+
+# vscode workspace
+*.code-workspace

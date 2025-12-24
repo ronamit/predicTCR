@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import {
   FwbNavbar,
   FwbNavbarCollapse,
@@ -9,10 +9,19 @@ import {
 } from "flowbite-vue";
 import { useUserStore } from "@/stores/user";
 import { useSettingsStore } from "@/stores/settings";
+import { devLogin } from "@/utils/api-client";
 import FooterComponent from "@/components/FooterComponent.vue";
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
 settingsStore.refresh();
+
+// Auto-login with dev user for local development
+onMounted(async () => {
+  if (userStore.user === null) {
+    await devLogin();
+  }
+});
+
 const login_title = computed(() => {
   if (userStore.user !== null) {
     return userStore.user.email;

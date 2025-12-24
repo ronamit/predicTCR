@@ -8,6 +8,8 @@ import LoginComponent from "@/components/LoginComponent.vue";
 import SignupComponent from "@/components/SignupComponent.vue";
 import { RouterLink } from "vue-router";
 import CarouselComponent from "@/components/CarouselComponent.vue";
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
 const showModalLogin = ref(false);
 function closeModals() {
   showModalSignup.value = false;
@@ -27,7 +29,7 @@ function openModalSignup() {
 <template>
   <main class="flex flex-col items-center justify-center">
     <HeadingComponent>
-      <div class="flex flex-row justify-center">
+      <div class="flex flex-row justify-center" v-if="userStore.user === null">
         <fwb-button
           @click="openModalSignup"
           class="mr-4 inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800"
@@ -40,6 +42,15 @@ function openModalSignup() {
         >
           Log in
         </fwb-button>
+      </div>
+      <div class="flex flex-row justify-center" v-else>
+        <RouterLink to="/samples">
+          <fwb-button
+            class="mr-4 inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800"
+          >
+            Go to My Samples
+          </fwb-button>
+        </RouterLink>
       </div>
       <CarouselComponent class="mt-4" />
     </HeadingComponent>
