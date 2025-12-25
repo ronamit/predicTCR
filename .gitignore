@@ -183,3 +183,7 @@ cython_debug/
 
 # vscode workspace
 *.code-workspace
+
+# Local data and results
+data/
+results_*/
